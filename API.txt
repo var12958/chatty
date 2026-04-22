@@ -1,0 +1,7 @@
+news_api= 63fc4369e8db42b5b0d77ef31a687183
+
+alphavantage= E82110QXI4HE6QJV
+
+spoonacular= c89bde474d0843719a8f8965d27c2d33
+
+Nasa= irUlz41sj3mxwt7I4XWY94opzQshHydJ974OIBNd
