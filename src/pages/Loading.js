@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 const API_BASE = 'http://localhost:5000';
@@ -15,14 +15,7 @@ export default function Loading({ topic, sessionId, onReady, onError }) {
   const [statusMessage, setStatusMessage] = useState('');
   const hasInitialized = useRef(false);
 
-  useEffect(() => {
-    if (hasInitialized.current) return;
-    hasInitialized.current = true;
-
-    initializeTopic();
-  }, []);
-
-  const initializeTopic = async () => {
+  const initializeTopic = useCallback(async () => {
     try {
       // Step 1
       setCurrentStep(0);
@@ -49,28 +42,34 @@ export default function Loading({ topic, sessionId, onReady, onError }) {
       setCurrentStep(2);
       setStatusMessage('Processing and chunking content...');
 
-      // Small delay so user sees step 3
       await new Promise(r => setTimeout(r, 800));
 
       // Step 4
       setCurrentStep(3);
       setStatusMessage('Initializing your assistant...');
 
-      // Small delay so user sees step 4
       await new Promise(r => setTimeout(r, 800));
 
-      // All done — move to chat
       onReady(data.domain);
 
     } catch (err) {
       console.error('Initialization error:', err.message);
       let userMessage = err.message || 'Failed to build your assistant. Please try again.';
+
       if (err instanceof TypeError) {
         userMessage = 'Cannot reach backend. Make sure it\'s running on localhost:5000';
       }
+
       onError(userMessage);
     }
-  };
+  }, [topic, sessionId, onReady, onError]);
+
+  useEffect(() => {
+    if (hasInitialized.current) return;
+    hasInitialized.current = true;
+
+    initializeTopic();
+  }, [initializeTopic]);
 
   return (
     <div className="fade-in w-full h-full flex items-center justify-center px-4">
@@ -103,7 +102,6 @@ export default function Loading({ topic, sessionId, onReady, onError }) {
                 index <= currentStep ? 'opacity-100' : 'opacity-25'
               }`}
             >
-              {/* Step indicator */}
               <div
                 className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 transition-all duration-300 ${
                   index < currentStep
@@ -116,7 +114,6 @@ export default function Loading({ topic, sessionId, onReady, onError }) {
                 {index < currentStep ? '✓' : index + 1}
               </div>
 
-              {/* Step text */}
               <span
                 className={`text-sm font-medium ${
                   index < currentStep
