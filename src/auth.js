@@ -151,7 +151,6 @@ const saveUserToFirestore = async (uid, userData) => {
     return await setDoc(doc(db, 'users', uid), userData, { merge: true });
   } catch (error) {
     console.error('Error saving user to Firestore:', error);
-    // Don't throw - auth succeeded even if Firestore save failed
   }
 };
 
@@ -173,3 +172,7 @@ const getErrorMessage = (errorCode) => {
 
   return errorMessages[errorCode] || 'An error occurred. Please try again.';
 };
+
+// ENSURE NO DEFAULT EXPORT EXISTS BELOW THIS LINE
+// The use of "export const" for individual functions above satisfies 
+// the requirement for named exports and prevents ESLint anonymous export errors.
