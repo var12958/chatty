@@ -1,9 +1,21 @@
 import React, { useState, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
 import Landing from './pages/Landing';
 import Loading from './pages/Loading';
 import Chat from './pages/Chat';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard';
+import ProtectedRoute from './components/ProtectedRoute';
 
+/**
+ * Main App Component
+ * Routes:
+ * - /login → Login page (public)
+ * - /dashboard → User dashboard (protected)
+ * - /chat/* → Chat interface (protected)
+ * - / → Landing page (public)
+ */
 export default function App() {
   const [currentPage, setCurrentPage] = useState('landing');
   const [topic, setTopic] = useState('');
@@ -63,33 +75,59 @@ export default function App() {
   };
 
   return (
-    <div className="app">
-      {error && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-red-100 border border-red-300 text-red-700 px-6 py-3 rounded-full text-sm shadow-md">
-          ⚠️ {error}
-        </div>
-      )}
+    <Router>
+      <Routes>
+        {/* Public Routes */}
+        <Route path="/login" element={<Login />} />
 
-      {currentPage === 'landing' && (
-        <Landing onCreateAI={handleCreateAI} />
-      )}
-      {currentPage === 'loading' && (
-        <Loading
-          topic={topic}
-          sessionId={sessionId.current}
-          onReady={handleReady}
-          onError={handleError}
+        {/* Protected Routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
         />
-      )}
-      {currentPage === 'chat' && (
-        <Chat
-          topic={topic}
-          domain={domain}
-          sessionId={sessionId.current}
-          onReset={handleReset}
-          onError={handleError}
+
+        {/* Original Chat App Routes */}
+        <Route
+          path="/"
+          element={
+            <div className="app">
+              {error && (
+                <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-red-100 border border-red-300 text-red-700 px-6 py-3 rounded-full text-sm shadow-md">
+                  ⚠️ {error}
+                </div>
+              )}
+
+              {currentPage === 'landing' && (
+                <Landing onCreateAI={handleCreateAI} />
+              )}
+              {currentPage === 'loading' && (
+                <Loading
+                  topic={topic}
+                  sessionId={sessionId.current}
+                  onReady={handleReady}
+                  onError={handleError}
+                />
+              )}
+              {currentPage === 'chat' && (
+                <Chat
+                  topic={topic}
+                  domain={domain}
+                  sessionId={sessionId.current}
+                  onReset={handleReset}
+                  onError={handleError}
+                />
+              )}
+            </div>
+          }
         />
-      )}
-    </div>
+
+        {/* Catch all - redirect to home */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </Router>
   );
 }
