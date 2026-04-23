@@ -113,11 +113,3 @@ export const apiDelete = (endpoint) => apiCall('DELETE', endpoint);
  *   res.json({ response: 'Hello!' });
  * });
  */
-
-export default {
-  apiCall,
-  apiGet,
-  apiPost,
-  apiPut,
-  apiDelete
-};

@@ -3,12 +3,12 @@ import { Navigate } from 'react-router-dom';
 import { onAuthStateChanged } from '../auth';
 
 /**
- * Protected Route Component
- * Only allows authenticated users to access wrapped routes
+ * ProtectedRoute Component
+ * Wraps components to prevent access by non-authenticated users
  * Redirects to /login if user is not authenticated
  * Shows loading state while checking auth status
  */
-export default function ProtectedRoute({ children }) {
+export function ProtectedRoute({ children }) {
   const [isAuthenticated, setIsAuthenticated] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -49,3 +49,5 @@ export default function ProtectedRoute({ children }) {
   // Authenticated - render children
   return children;
 }
+
+ProtectedRoute.displayName = 'ProtectedRoute';

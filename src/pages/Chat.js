@@ -2,7 +2,10 @@ import React, { useState, useRef, useEffect } from 'react';
 
 const API_BASE = 'http://localhost:5000';
 
-export default function Chat({ topic, domain, sessionId, onReset, onError }) {
+/**
+ * Chat Component - Main chat interface with AI assistant
+ */
+export function Chat({ topic, domain, sessionId, onReset, onError }) {
   const [messages, setMessages] = useState([
     {
       type: 'ai',
@@ -239,3 +242,5 @@ export default function Chat({ topic, domain, sessionId, onReset, onError }) {
     </div>
   );
 }
+
+Chat.displayName = 'Chat';

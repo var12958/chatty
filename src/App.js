@@ -1,27 +1,38 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import './App.css';
-import Landing from './pages/Landing';
-import Loading from './pages/Loading';
-import Chat from './pages/Chat';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import ProtectedRoute from './components/ProtectedRoute';
+import { Landing } from './pages/Landing';
+import { Loading } from './pages/Loading';
+import { Chat } from './pages/Chat';
+import { Login } from './pages/Login';
+import { Dashboard } from './pages/Dashboard';
+import { ProtectedRoute } from './components/ProtectedRoute';
+import { onAuthStateChanged } from './auth';
 
 /**
- * Main App Component
+ * Main App Component with React Router
  * Routes:
  * - /login → Login page (public)
  * - /dashboard → User dashboard (protected)
  * - /chat/* → Chat interface (protected)
  * - / → Landing page (public)
  */
-export default function App() {
+export function App() {
+  const [user, setUser] = useState(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState('landing');
   const [topic, setTopic] = useState('');
   const [error, setError] = useState('');
   const [domain, setDomain] = useState('');
   const sessionId = useRef(`session_${Date.now()}`);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+      setIsAuthLoading(false);
+    });
+    return () => unsubscribe();
+  }, []);
 
   const handleCreateAI = (selectedTopic) => {
     setTopic(selectedTopic);
@@ -74,11 +85,22 @@ export default function App() {
     setCurrentPage('landing');
   };
 
+  if (isAuthLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-green-500"></div>
+      </div>
+    );
+  }
+
   return (
     <Router>
       <Routes>
         {/* Public Routes */}
-        <Route path="/login" element={<Login />} />
+        <Route 
+          path="/login" 
+          element={user ? <Navigate to="/dashboard" replace /> : <Login />} 
+        />
 
         {/* Protected Routes */}
         <Route
@@ -131,3 +153,5 @@ export default function App() {
     </Router>
   );
 }
+
+App.displayName = 'App';

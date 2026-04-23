@@ -2,7 +2,11 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { signInWithGoogle, signInWithEmail, signUpWithEmail } from '../auth';
 
-export default function Login() {
+/**
+ * Login Component - Handles Google Sign-In and Email/Password auth
+ * Shows signup form or login form based on isSignUp state
+ */
+export function Login() {
   const navigate = useNavigate();
   const [isSignUp, setIsSignUp] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -266,3 +270,5 @@ export default function Login() {
     </div>
   );
 }
+
+Login.displayName = 'Login';

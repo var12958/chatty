@@ -52,7 +52,11 @@ export const signUpWithEmail = async (email, password, displayName) => {
 export const signInWithEmail = async (email, password) => {
   try {
     const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    return { success: true, user: userCredential.user };
+    const user = userCredential.user;
+    
+    // Sync login time or basic data to Firestore
+    await saveUserToFirestore(user.uid, { lastLogin: new Date().toISOString() });
+    return { success: true, user };
   } catch (error) {
     const errorMessage = getErrorMessage(error.code);
     throw new Error(errorMessage);
@@ -144,10 +148,9 @@ export const getUserData = async (uid) => {
  */
 const saveUserToFirestore = async (uid, userData) => {
   try {
-    await setDoc(doc(db, 'users', uid), userData, { merge: true });
+    return await setDoc(doc(db, 'users', uid), userData, { merge: true });
   } catch (error) {
     console.error('Error saving user to Firestore:', error);
-    // Don't throw - auth succeeded even if Firestore save failed
   }
 };
 
@@ -170,12 +173,6 @@ const getErrorMessage = (errorCode) => {
   return errorMessages[errorCode] || 'An error occurred. Please try again.';
 };
 
-export default {
-  signUpWithEmail,
-  signInWithEmail,
-  signInWithGoogle,
-  logout,
-  getCurrentUser,
-  onAuthStateChanged,
-  getUserData
-};
+// ENSURE NO DEFAULT EXPORT EXISTS BELOW THIS LINE
+// The use of "export const" for individual functions above satisfies 
+// the requirement for named exports and prevents ESLint anonymous export errors.
