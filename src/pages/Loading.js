@@ -10,7 +10,10 @@ const STEPS = [
   'Initializing your assistant...',
 ];
 
-export default function Loading({ topic, sessionId, onReady, onError }) {
+/**
+ * Loading Component - Shows progress while initializing assistant
+ */
+export function Loading({ topic, sessionId, onReady, onError }) {
   const [currentStep, setCurrentStep] = useState(0);
   const [statusMessage, setStatusMessage] = useState('');
   const hasInitialized = useRef(false);
@@ -156,3 +159,5 @@ export default function Loading({ topic, sessionId, onReady, onError }) {
     </div>
   );
 }
+
+Loading.displayName = 'Loading';

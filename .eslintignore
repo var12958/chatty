@@ -1,0 +1,8 @@
+# ESLint ignore file - Prevents ESLint errors from blocking builds on Netlify
+
+node_modules/
+build/
+dist/
+.firebase/
+backend/
+.env*

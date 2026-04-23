@@ -2,7 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { logout, getCurrentUser, getUserData } from '../auth';
 
-export default function Dashboard() {
+/**
+ * Dashboard Component - Shows user profile after authentication
+ * Protected route - only accessible to authenticated users
+ */
+export function Dashboard() {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [userData, setUserData] = useState(null);
@@ -213,3 +217,5 @@ export default function Dashboard() {
     </div>
   );
 }
+
+Dashboard.displayName = 'Dashboard';

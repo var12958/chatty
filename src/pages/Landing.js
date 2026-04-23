@@ -11,7 +11,10 @@ const EXAMPLE_TOPICS = [
   'Personal Finance'
 ];
 
-export default function Landing({ onCreateAI }) {
+/**
+ * Landing Component - Home page showing topic selection
+ */
+export function Landing({ onCreateAI }) {
   const [input, setInput] = useState('');
   const [error, setError] = useState('');
   const [history, setHistory] = useState([]);
@@ -193,3 +196,5 @@ export default function Landing({ onCreateAI }) {
     </div>
   );
 }
+
+Landing.displayName = 'Landing';
